@@ -9,7 +9,11 @@ import (
 
 // Creates the named file and parent directories if need
 func CreateFile(name string) (*os.File, error) {
-	file, err := os.Create(name)
+	return open(name, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0666)
+}
+
+func open(name string, flag int, perm os.FileMode) (*os.File, error) {
+	file, err := os.OpenFile(name, flag, perm)
 	if err == nil {
 		return file, nil
 	}
@@ -23,7 +27,7 @@ func CreateFile(name string) (*os.File, error) {
 		return nil, errors.WithStack(err)
 	}
 
-	file, err = os.Create(name)
+	file, err = os.OpenFile(name, flag, perm)
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
@@ -38,17 +42,17 @@ func CopyFile(from string, to string, fromInfo os.FileInfo) error {
 	}
 
 	defer sourceFile.Close()
-	return WriteFile(sourceFile, to, fromInfo)
+	return WriteFile(sourceFile, to, fromInfo, make([]byte, 32*1024))
 }
 
-func WriteFile(source io.Reader, to string, fromInfo os.FileInfo) error {
+func WriteFile(source io.Reader, to string, fromInfo os.FileInfo, buffer []byte) error {
 	// cannot use file mode as is because of *** *** *** umask
-	destinationFile, err := os.OpenFile(to, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0666)
+	destinationFile, err := open(to, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0666)
 	if err != nil {
 		return errors.WithStack(err)
 	}
 
-	_, err = io.Copy(destinationFile, source)
+	_, err = io.CopyBuffer(destinationFile, source, buffer)
 	if err != nil {
 		destinationFile.Close()
 		return errors.WithStack(err)
