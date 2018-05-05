@@ -73,3 +73,29 @@ func WriteFile(source io.Reader, to string, fromInfo os.FileInfo, buffer []byte)
 
 	return nil
 }
+
+func EnsureEmptyDir(dirPath string) error {
+	dir, err := os.Open(dirPath)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return errors.WithStack(os.MkdirAll(dirPath, 0777))
+		} else {
+			return errors.WithStack(err)
+		}
+	}
+
+	defer dir.Close()
+
+	files, err := dir.Readdirnames(0)
+	if err != nil {
+		return errors.WithStack(err)
+	}
+
+	for _, name := range files {
+		err = os.RemoveAll(filepath.Join(dirPath, name))
+		if err != nil {
+			return errors.WithStack(err)
+		}
+	}
+	return nil
+}
