@@ -99,3 +99,24 @@ func EnsureEmptyDir(dirPath string) error {
 	}
 	return nil
 }
+
+func ReadDirContent(dirPath string) ([]string, error) {
+	dir, err := os.Open(dirPath)
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
+
+	files, err := dir.Readdirnames(0)
+	return files, CloseAndCheckError(err, dir)
+}
+
+func CloseAndCheckError(err error, closable io.Closer) error {
+	closeErr := closable.Close()
+	if err != nil {
+		return errors.WithStack(err)
+	}
+	if closeErr != nil {
+		return errors.WithStack(closeErr)
+	}
+	return nil
+}
