@@ -115,7 +115,7 @@ func CloseAndCheckError(err error, closable io.Closer) error {
 	if err != nil {
 		return errors.WithStack(err)
 	}
-	if closeErr != nil {
+	if closeErr != nil && closeErr != os.ErrClosed {
 		return errors.WithStack(closeErr)
 	}
 	return nil
