@@ -74,6 +74,10 @@ func WriteFile(source io.Reader, to string, fromInfo os.FileInfo, buffer []byte)
 	return nil
 }
 
+func EnsureDir(dirPath string) error {
+	return errors.WithStack(os.MkdirAll(dirPath, 0777))
+}
+
 func EnsureEmptyDir(dirPath string) error {
 	dir, err := os.Open(dirPath)
 	if err != nil {
