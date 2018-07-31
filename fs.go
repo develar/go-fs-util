@@ -42,10 +42,10 @@ func CopyFile(from string, to string, fromInfo os.FileInfo) error {
 	}
 
 	defer sourceFile.Close()
-	return WriteFile(sourceFile, to, fromInfo, make([]byte, 32*1024))
+	return WriteFile(sourceFile, to, fromInfo.Mode(), make([]byte, 32*1024))
 }
 
-func WriteFile(source io.Reader, to string, fromInfo os.FileInfo, buffer []byte) error {
+func WriteFile(source io.Reader, to string, fileMode os.FileMode, buffer []byte) error {
 	// cannot use file mode as is because of *** *** *** umask
 	destinationFile, err := open(to, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0666)
 	if err != nil {
@@ -58,7 +58,7 @@ func WriteFile(source io.Reader, to string, fromInfo os.FileInfo, buffer []byte)
 		return errors.WithStack(err)
 	}
 
-	perm := fromInfo.Mode().Perm()
+	perm := fileMode.Perm()
 	if perm != 0644 {
 		err = os.Chmod(to, perm)
 		if err != nil {
