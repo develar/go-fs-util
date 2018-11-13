@@ -1,10 +1,10 @@
 package fsutil
 
 import (
-	"os"
-	"path/filepath"
 	"github.com/develar/errors"
 	"io"
+	"os"
+	"path/filepath"
 )
 
 // Creates the named file and parent directories if need
@@ -35,14 +35,14 @@ func open(name string, flag int, perm os.FileMode) (*os.File, error) {
 	return file, nil
 }
 
-func CopyFile(from string, to string, fromInfo os.FileInfo) error {
+func CopyFile(from string, to string, fromFileMode os.FileMode) error {
 	sourceFile, err := os.Open(from)
 	if err != nil {
 		return errors.WithStack(err)
 	}
 
 	defer sourceFile.Close()
-	return WriteFile(sourceFile, to, fromInfo.Mode(), make([]byte, 32*1024))
+	return WriteFile(sourceFile, to, fromFileMode, make([]byte, 32*1024))
 }
 
 func WriteFile(source io.Reader, to string, fileMode os.FileMode, buffer []byte) error {
@@ -54,7 +54,7 @@ func WriteFile(source io.Reader, to string, fileMode os.FileMode, buffer []byte)
 
 	_, err = io.CopyBuffer(destinationFile, source, buffer)
 	if err != nil {
-		destinationFile.Close()
+		_ = destinationFile.Close()
 		return errors.WithStack(err)
 	}
 
