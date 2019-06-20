@@ -58,12 +58,9 @@ func WriteFile(source io.Reader, to string, fileMode os.FileMode, buffer []byte)
 		return errors.WithStack(err)
 	}
 
-	perm := fileMode.Perm()
-	if perm != 0644 {
-		err = os.Chmod(to, perm)
-		if err != nil {
-			return errors.WithStack(err)
-		}
+	_, _, err = FixPermissions(to, fileMode)
+	if err != nil {
+		return errors.WithStack(err)
 	}
 
 	err = destinationFile.Close()

@@ -1,0 +1,6 @@
+github.com/develar/errors v0.9.0 h1:ftXOTwkajtgkUwLTw1iKG+mJwrUTvCp9Zr/Z6Y+rvMY=
+github.com/develar/errors v0.9.0/go.mod h1:zNbO3fZHcBjapJKbvUnvyaNrKGKkxgaL6C8Z7uNzQMc=
+github.com/phayes/permbits v0.0.0-20190612203442-39d7c581d2ee h1:P6U24L02WMfj9ymZTxl7CxS73JC99x3ukk+DBkgQGQs=
+github.com/phayes/permbits v0.0.0-20190612203442-39d7c581d2ee/go.mod h1:3uODdxMgOaPYeWU7RzZLxVtJHZ/x1f/iHkBZuKJDzuY=
+github.com/pkg/errors v0.8.1 h1:iURUrRGxPUNPdy5/HRSm+Yj6okJ6UtLINN0Q9M4+h3I=
+github.com/pkg/errors v0.8.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
