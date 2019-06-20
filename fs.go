@@ -58,7 +58,7 @@ func WriteFile(source io.Reader, to string, fileMode os.FileMode, buffer []byte)
 		return errors.WithStack(err)
 	}
 
-	_, _, err = FixPermissions(to, fileMode)
+	_, _, err = FixPermissions(to, fileMode, true /* because we create with file mode 0666 (0644 without *** *** *** umask) */)
 	if err != nil {
 		return errors.WithStack(err)
 	}
